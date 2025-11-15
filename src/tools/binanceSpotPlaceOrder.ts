@@ -1,7 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { algoClient, spotClient } from "../config/client.js";
-import { OrderType, Side } from "@binance/connector-typescript";
 
 export function registerBinanceSpotPlaceOrder(server: McpServer) {
   server.tool(
@@ -20,7 +19,7 @@ export function registerBinanceSpotPlaceOrder(server: McpServer) {
       try {
 
 
-        const result = await spotClient.newOrder(symbol, side as Side, OrderType.MARKET, {
+        const result = await spotClient.newOrder(symbol, side, "MARKET", {
             quantity,
             quoteOrderQty,
         })

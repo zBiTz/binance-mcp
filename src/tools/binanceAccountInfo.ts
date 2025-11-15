@@ -1,7 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { spotClient } from "../config/client.js";
-import { AccountSnapshotType } from "@binance/connector-typescript";
 export function registerBinanceAccountInfo(server: McpServer) {
   server.tool(
     "binanceAccountInfo",
@@ -10,13 +9,13 @@ export function registerBinanceAccountInfo(server: McpServer) {
     async ({}) => {
       try {
         const accountInfo = await spotClient.accountInformation();
-        const accountSnapshot = await spotClient.dailyAccountSnapshot(AccountSnapshotType.SPOT, { limit: 7 });
+        const accountSnapshot = await spotClient.dailyAccountSnapshot("SPOT", { limit: 7 });
         const userAsset = await spotClient.userAsset({ needBtcValuation: true })
         if (userAsset) {
-          const balances = userAsset.map(item => ({
+          const balances = userAsset.map((item: any) => ({
             asset: item.asset, free: item.free, locked: item.locked
           }))
-          const totalAssetOfBtc = userAsset.reduce((sum, item) => sum + parseFloat(item.btcValuation || "0"), 0).toFixed(20).replace(/\.?0+$/, "");
+          const totalAssetOfBtc = userAsset.reduce((sum: number, item: any) => sum + parseFloat(item.btcValuation || "0"), 0).toFixed(20).replace(/\.?0+$/, "");
           accountSnapshot.snapshotVos.push({
             type: "spot",
             updateTime: Date.now(),
